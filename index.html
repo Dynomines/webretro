@@ -22,15 +22,34 @@
 		<link rel="dns-prefetch" href="https://cdn.jsdelivr.net/">
 		<script>
 			if ('serviceWorker' in navigator) {
-			  window.addEventListener('load', function() {
-				navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
-				  console.log('ServiceWorker registration successful with scope: ', registration.scope);
-				}, function(error) {
-				  console.log('ServiceWorker registration failed: ', error);
+			  navigator.serviceWorker.register('/service-worker.js').then((registration) => {
+				console.log('Service Worker registered with scope:', registration.scope);
+			  });
+		  
+			  navigator.serviceWorker.ready.then((registration) => {
+				navigator.serviceWorker.addEventListener('message', (event) => {
+				  if (event.data === 'caching-complete') {
+					// Create and display a caching complete message
+					const cacheCompleteMessage = document.createElement('div');
+					cacheCompleteMessage.innerText = "Site has been cached and is ready for offline use!";
+					cacheCompleteMessage.style.position = 'fixed';
+					cacheCompleteMessage.style.bottom = '20px';
+					cacheCompleteMessage.style.left = '20px';
+					cacheCompleteMessage.style.padding = '10px';
+					cacheCompleteMessage.style.backgroundColor = '#4caf50';
+					cacheCompleteMessage.style.color = 'white';
+					cacheCompleteMessage.style.borderRadius = '5px';
+					document.body.appendChild(cacheCompleteMessage);
+		  
+					// Hide the message after 5 seconds
+					setTimeout(() => {
+					  cacheCompleteMessage.style.display = 'none';
+					}, 5000);
+				  }
 				});
 			  });
 			}
-		</script>
+		  </script>		  
 	</head>
 	<body>
 		<div class="main" id="mainarea">
