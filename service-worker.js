@@ -5,11 +5,10 @@ const CACHE_NAME = 'webretro-cache-v1';
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      // Cache the base index page
       return cache.addAll([
-        '/',
-        '/index.html',
-        '/manifest.json', // Include the manifest file for PWA features
+        '/', 
+        '/index.html', 
+        '/manifest.json', 
         '/assets/base.css?v=6.5',
         '/assets/jswindow.css',
         '/assets/icons/icon204.png',
@@ -21,10 +20,16 @@ self.addEventListener('install', event => {
         '/pwa.js',
         '/assets/charToCodeMap.js?v=6.5',
         '/assets/base.js?v=6.5',
-      ]);
+      ]).then(() => {
+        // Notify all clients (pages) that caching is complete
+        self.clients.matchAll().then(clients => {
+          clients.forEach(client => client.postMessage('caching-complete'));
+        });
+      });
     })
   );
 });
+
 
 // Serve cached content when offline or network is slow
 self.addEventListener('fetch', event => {
